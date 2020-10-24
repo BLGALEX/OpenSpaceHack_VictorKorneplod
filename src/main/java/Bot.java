@@ -76,10 +76,7 @@ public class Bot extends TelegramLongPollingBot {
                     sendMsg(message, "я готов");
                     break;
                 default:
-                    System.out.print(message.getText());
-                    Scanner scan = new Scanner(System.in);
-                    String s = scan.nextLine();
-                    sendMsg(message, s);
+                    sendMsg(message, message.getText());
                     break;
 
             }
