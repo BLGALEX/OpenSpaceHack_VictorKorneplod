@@ -27,7 +27,7 @@ public class Bot extends TelegramLongPollingBot {
     }
 
 
-    public void sendMsg(Message message, String text){
+    public void sendMsg(org.telegram.telegrambots.api.objects.Message message, String text){
         SendMessage sendMessage = new SendMessage();
         sendMessage.enableMarkdown(true);
         sendMessage.setChatId(message.getChatId().toString());
