@@ -7,6 +7,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Iterator;
+import storing.Record;
 
 public class Parser_ExcelToJava {
     public static ArrayList<Record> parse(String fileName) {

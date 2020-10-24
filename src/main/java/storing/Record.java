@@ -17,7 +17,7 @@ public class Record {
     private int nSteps;
     private List<String> steps;
 
-    Record() {
+    public Record() {
         this.steps = new ArrayList<>();
     }
 
