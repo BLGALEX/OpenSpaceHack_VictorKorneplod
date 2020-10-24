@@ -19,10 +19,6 @@
 "Pre-module bytecode version" в первом элементе (если он есть) указываем в поле "Target bytecode version" указываем номер версии своего JDK.
 Жмём Ок.
 
-5) Заходим в File> Project Structure> Project Settings> Modules> Dependencies и жмем "+" справа.
-выбираем "JAR or directories.." и в открывшемся меню проводника заходим в папку с названием проекта (по умолчанию "OpenSpaceHack_Victorkorneplod")
-OpenSpaceHack_Victorkorneplod> src> main> resources> telegrambots-3.6-jar-with-dependencies.jar; Жмём Ок и ждём 
-
-6) В intellij idea сслева раскрываем папку проекта переходим src> main> java;
+5) В intellij idea сслева раскрываем папку проекта переходим src> main> java;
 Кликаем правой кнопкой по классу "Bot" и выбираем "Run Bot.main()" , ждём и бот запущен!
 

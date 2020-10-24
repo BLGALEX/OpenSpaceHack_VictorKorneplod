@@ -1,33 +1,27 @@
 package tests;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import storing.Record;
 
+import static tests.TestData.TESTS_FILE_NAME;
+
 public class TestGenerator {
-
-    static final String TESTS_FILE_NAME = "tests.txt";
-
     public static void exportTests(List<Record> records) throws IOException {
         File file = new File(TESTS_FILE_NAME);
-        PrintWriter printWriter = new PrintWriter(file);
 
-        ArrayList<Test> tests = makeTests(records);
-        for (Test test : tests) {
-            printWriter.print(test.getClassification());
-            printWriter.print(";");
-            printWriter.print(test.getInput());
-            printWriter.print(";");
-            printWriter.print(test.getOutput());
-            printWriter.println();
+        try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(TESTS_FILE_NAME)))
+        {
+            ArrayList<Test> tests = makeTests(records);
+            for (Test test : tests) {
+                oos.writeObject(test);
+            }
+        } catch(Exception e){
+            System.out.println(e.getMessage());
         }
-
-        printWriter.close();
     }
 
     public static ArrayList<Test> makeTests(List<Record> records) {
