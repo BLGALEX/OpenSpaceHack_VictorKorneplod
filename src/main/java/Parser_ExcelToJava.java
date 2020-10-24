@@ -12,7 +12,7 @@ import storing.Record;
 public class Parser_ExcelToJava {
     public static ArrayList<Record> parse(String fileName) {
         //инициализируем потоки
-        ArrayList<Record> result = null;
+        ArrayList<Record> result = new ArrayList<>();
         InputStream inputStream = null;
         XSSFWorkbook workBook = null;
         try {
@@ -26,17 +26,36 @@ public class Parser_ExcelToJava {
         Iterator<Row> it = sheet.iterator();//
         it.next();
         //проходим по всему листу
+        int id = 0;
         while (it.hasNext()) {
             Row row = it.next();
             Iterator<Cell> cells = row.iterator();
             cells.next();
             //проходим по всем строкам
+            Record record = new Record();
+            int count = 0;
             while (cells.hasNext()) {
                 Cell cell = cells.next();
                 //перебираем все ячейки
-                Record record = new Record();
+                switch (count) {
+                    case 0:
+
+                        break;
+                    case 1:
+                        break;
+                    case 2:
+                        break;
+                    case 3:
+                        break;
+                }
+                count++;
             }
+            result.add(record);
+            id++;
         }
         return result;
+    }
+
+    public static void main(String[] args) {
     }
 }
