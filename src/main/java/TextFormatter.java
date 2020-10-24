@@ -1,6 +1,15 @@
+import java.io.IOException;
 import java.util.*;
-public class TextFormatter {
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 
+public class TextFormatter {
+    // Ключ должен лежать в отдельном файле и должен быть записан
+    // в .gitignore. В рамках хакатона пусть ключ будет публичным.
     private static final String API_KEY = "165f7b51cef1b84f577a130793205dbdaec40308";
 
     private static Set<String> wordsToRemove = new HashSet<>(
@@ -25,7 +34,8 @@ public class TextFormatter {
             )
     );
     
-    private static Map<Character, Character> enToRus = new HashMap<Character, Character>() {{
+    private static Map<Character, Character> enToRus = new HashMap<Character, Character>() {
+        {
         enToRus.put('q', 'й'); enToRus.put('w', 'ц');
         enToRus.put('e', 'у'); enToRus.put('r', 'к');
         enToRus.put('t', 'е'); enToRus.put('y', 'н');
@@ -39,40 +49,54 @@ public class TextFormatter {
         enToRus.put('x', 'ч'); enToRus.put('c', 'с');
         enToRus.put('v', 'м'); enToRus.put('b', 'и');
         enToRus.put('n', 'т'); enToRus.put('m', 'ь');
-    }};
+    }
+    };
 
 
     private TextFormatter(){};
 
     public static List<String> getFixedWords(String text) {
-        String validLayoutText = fixKeyboardLayout(text);
-//        String[] badWords = text.split("([^\\w\\s]|_)+");
-//        List<String> validWords = new ArrayList<>();
-//        for (int i = 0; i < badWords.length; i++) {
-//            String validWord = getFixed(badWords[i]);
-//            if (!wordsToRemove.contains(validWord)) {
-//                validWords.add(validWord);
-//            }
-//        }
-        String apiGetString =
-                "http://api.ispras.ru/texterra/v1/nlp?targetType=spelling-correction-token&apikey=" + API_KEY;
+        String validKeyboardLayoutText = fixKeyboardLayout(text);
+        final String apiCorrectionString =
+            "http://api.ispras.ru/texterra/v1/nlp?targetType=spelling-correction-token&apikey=" + API_KEY;
+        final String apiNormilizeString =
+            "http://api.ispras.ru/texterra/v1/nlp?targetType=spelling-correction-token&apikey=" + API_KEY;
+        List<String> validWords = new ArrayList<>();
+        try{
+            String correctionText = sendPOST(apiCorrectionString, validKeyboardLayoutText);
+            correctionText = parseToString(correctionText);
+
+            String normalizedText = sendPOST(apiNormilizeString, correctionText);
+            validWords = Arrays.asList(parseToString(normalizedText).split(" "));
+        }
+        catch (Exception e) {}
+        return validWords;
+    }
+
+    private static String parseToString(String string) {
         return null;
     }
 
-    public static String getFixed(String string) {
-        // Порядок: приводим к нижнему регистру => исправляем раскладку =>
-        // => исправляем опечатки => приводим к нормальной форме
-        String validString = string.toLowerCase();
-        validString = fixKeyboardLayout(validString);
-        validString = getValidForm(validString);
-        validString = getNormalizedForm(validString);
-        return validString;
-    }
+    private static String sendPOST(String url, String text) throws IOException {
+        HttpPost post = new HttpPost(url);
+        post.addHeader("Accept", "application/json");
+        post.addHeader("Content-Type", "application/json");
 
-    public static String getValidForm(String string) {
-        String apiGetString =
-                "http://api.ispras.ru/texterra/v1/nlp?targetType=lemma&apikey=" + API_KEY;
-        return apiGetString;
+        StringBuilder json = new StringBuilder();
+        json.append("{");
+        json.append("\"text\":\"" + text + "\"");
+        json.append("}");
+
+        post.setEntity(new StringEntity(json.toString()));
+
+        String result;
+        try (CloseableHttpClient httpClient = HttpClients.createDefault();
+             CloseableHttpResponse response = httpClient.execute(post)) {
+
+            result = EntityUtils.toString(response.getEntity());
+        }
+
+        return result;
     }
 
     public static String fixKeyboardLayout(String string) {
@@ -82,10 +106,4 @@ public class TextFormatter {
         }
         return sb.toString();
     }
-
-    public static String getNormalizedForm(String string) {
-        String validString = "1";
-        return validString;
-    }
-
 }
