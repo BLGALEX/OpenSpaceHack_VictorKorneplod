@@ -1,6 +1,8 @@
 package tests;
 
-public class Test {
+import java.io.Serializable;
+
+public class Test implements Serializable {
     private int classification;
     private String input;
     private int output;
