@@ -1,6 +1,7 @@
 import java.util.*;
-
 public class TextFormatter {
+
+    private static final String API_KEY = "165f7b51cef1b84f577a130793205dbdaec40308";
 
     private static Set<String> wordsToRemove = new HashSet<>(
             Arrays.asList(
@@ -44,21 +45,22 @@ public class TextFormatter {
     private TextFormatter(){};
 
     public static List<String> getFixedWords(String text) {
-        // Разделяем на отдельные слова, удаляя все лишние символы
-        String[] badWords = text.split("([^\\w\\s]|_)+");
-        List<String> validWords = new ArrayList<>();
-        for (int i = 0; i < badWords.length; i++) {
-            // Исправляем опечатки и приводим к нормальной форме
-            String validWord = getFixed(badWords[i]);
-            if (!wordsToRemove.contains(validWord)) {
-                validWords.add(validWord);
-            }
-        }
-        return validWords;
+        String validLayoutText = fixKeyboardLayout(text);
+//        String[] badWords = text.split("([^\\w\\s]|_)+");
+//        List<String> validWords = new ArrayList<>();
+//        for (int i = 0; i < badWords.length; i++) {
+//            String validWord = getFixed(badWords[i]);
+//            if (!wordsToRemove.contains(validWord)) {
+//                validWords.add(validWord);
+//            }
+//        }
+        String apiGetString =
+                "http://api.ispras.ru/texterra/v1/nlp?targetType=spelling-correction-token&apikey=" + API_KEY;
+        return null;
     }
 
     public static String getFixed(String string) {
-        // Приводим к нижнему регистру => исправляем раскладку =>
+        // Порядок: приводим к нижнему регистру => исправляем раскладку =>
         // => исправляем опечатки => приводим к нормальной форме
         String validString = string.toLowerCase();
         validString = fixKeyboardLayout(validString);
@@ -68,8 +70,9 @@ public class TextFormatter {
     }
 
     public static String getValidForm(String string) {
-        String validString = "1";
-        return validString;
+        String apiGetString =
+                "http://api.ispras.ru/texterra/v1/nlp?targetType=lemma&apikey=" + API_KEY;
+        return apiGetString;
     }
 
     public static String fixKeyboardLayout(String string) {
