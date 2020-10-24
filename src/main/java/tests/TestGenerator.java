@@ -3,7 +3,6 @@ package tests;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sun.tools.javac.util.Pair;
 import storing.Record;
 
 public class TestGenerator {
