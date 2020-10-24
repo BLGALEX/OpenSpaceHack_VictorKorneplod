@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 enum RB {
     INTERNET,
     MOBILE
@@ -8,7 +11,13 @@ public class Record {
     private String clarification;
     private RB rb;
     private String question;
-    private int[] steps;
+    private int nSteps;
+    private List<String> steps;
+
+    Record() {
+        this.steps = new ArrayList<>();
+    }
+
 
     public String getRequest() {
         return request;
@@ -24,6 +33,14 @@ public class Record {
 
     public String getQuestion() {
         return question;
+    }
+
+    public int getnSteps() {
+        return nSteps;
+    }
+
+    public List<String> getSteps() {
+        return steps;
     }
 
     public void setRequest(String request) {
@@ -42,11 +59,11 @@ public class Record {
         this.question = question;
     }
 
-    public int[] getSteps() {
-        return steps;
+    public void setnSteps(int nSteps) {
+        this.nSteps = nSteps;
     }
 
-    public void setSteps(int[] steps) {
+    public void setSteps(List<String> steps) {
         this.steps = steps;
     }
 }
