@@ -24,7 +24,7 @@ public class TestGenerator {
     public ArrayList<Test> makeTestsMistakeQuestions(List<Record> records) {
         ArrayList<Test> tests = new ArrayList<>();
         for (Record record : records) {
-            String question = record.getQuestion();
+            char question_array[] = record.getQuestion().toCharArray();
             tests.add(new Test(0, record.getQuestion(), record.getId()));
         }
         return tests;
