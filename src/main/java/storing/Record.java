@@ -71,4 +71,10 @@ public class Record {
     public void setSteps(List<String> steps) {
         this.steps = steps;
     }
+
+    @Override
+    public String toString(){
+        return "ID - " + getId() + " " + getRequest() + " " + getClarification() +
+                " " + getRb() + " " + getQuestion() + " " + getnSteps();
+    }
 }
