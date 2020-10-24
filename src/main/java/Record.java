@@ -7,6 +7,7 @@ enum RB {
 }
 
 public class Record {
+    int id;
     private String request;
     private String clarification;
     private RB rb;
@@ -18,6 +19,9 @@ public class Record {
         this.steps = new ArrayList<>();
     }
 
+    public int getId() {
+        return id;
+    }
 
     public String getRequest() {
         return request;
@@ -41,6 +45,10 @@ public class Record {
 
     public List<String> getSteps() {
         return steps;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setRequest(String request) {
