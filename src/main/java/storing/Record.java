@@ -3,11 +3,6 @@ package storing;
 import java.util.ArrayList;
 import java.util.List;
 
-enum RB {
-    INTERNET,
-    MOBILE
-}
-
 public class Record {
     int id;
     private String request;
