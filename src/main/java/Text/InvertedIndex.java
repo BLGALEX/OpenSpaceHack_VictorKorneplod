@@ -54,6 +54,11 @@ public class InvertedIndex {
             result.add(entry.getKey());
         }
 
+        if (result.isEmpty()) {
+            List<Integer> lst = new ArrayList<>();
+            lst.add(-1);
+            return lst;
+        }
         return result;
     }
 
