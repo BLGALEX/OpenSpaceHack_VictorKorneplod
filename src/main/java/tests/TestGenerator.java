@@ -61,7 +61,7 @@ public class TestGenerator {
         }
 
         List<Record> records = ParserExcel.parse(DATABASE_FILE_NAME);
-        InvertedIndex index = new InvertedIndex(records);
+        InvertedIndex index = new InvertedIndex();
         List<String> lst = TextFormatter.getFixedWords("Как потратить бонусные рубли");
         System.out.println(index.processQuestion(lst));
 

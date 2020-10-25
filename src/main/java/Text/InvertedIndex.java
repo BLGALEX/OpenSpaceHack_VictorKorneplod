@@ -19,78 +19,13 @@ public class InvertedIndex {
 
     private HashMap<String, HashMap<Integer, Integer>> index;
 
-    public InvertedIndex(List<Record> records) {
-        index = new HashMap<>();
-
-        File file = new File(INVERTED_INDEX_FILE_NAME);
-        if (file.exists()) {
-            try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file)))
-            {
-                index = (HashMap<String, HashMap<Integer, Integer>>)ois.readObject();
-            }
-            catch(Exception e){
-                System.out.println(e.getMessage());
-            }
-        } else {
-            int counter = 1;
-            try (PrintWriter writer = new PrintWriter("pozhaluista_ne_padai.txt")) {
-                for (Record record : records) {
-                    writer.println(counter);
-
-                    List<String> questionWords = TextFormatter.getFixedWords(record.getQuestion());
-                    for (String word : questionWords) {
-                        Map<Integer, Integer> mp = index.getOrDefault(word, new HashMap<>());
-                        mp.put(record.getId(), mp.getOrDefault(record.getId(), 0) + PRIORITY_QUESTION);
-                    }
-
-                    for (String word : questionWords) {
-                        writer.print(word);
-                        writer.print(" ");
-                    }
-                    writer.println();
-
-                    List<String> requestWords = TextFormatter.getFixedWords(record.getRequest());
-                    for (String word : requestWords) {
-                        Map<Integer, Integer> mp = index.getOrDefault(word, new HashMap<>());
-                        mp.put(record.getId(), mp.getOrDefault(record.getId(), 0) + PRIORITY_REQUEST);
-                    }
-
-                    for (String word : requestWords) {
-                        writer.print(word);
-                        writer.print(" ");
-                    }
-                    writer.println();
-
-                    List<String> clarificationWords = TextFormatter.getFixedWords(record.getClarification());
-                    for (String word : clarificationWords) {
-                        Map<Integer, Integer> mp = index.getOrDefault(word, new HashMap<>());
-                        mp.put(record.getId(), mp.getOrDefault(record.getId(), 0) + PRIORITY_CLARIFICATION);
-                    }
-
-                    for (String word : clarificationWords) {
-                        writer.print(word);
-                        writer.print(" ");
-                    }
-                    writer.println();
-
-                    writer.flush();
-                    ++counter;
-
-                    try {
-                        Thread.sleep(12000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
-                    oos.writeObject(index);
-                } catch(Exception e){
-                    System.out.println(e.getMessage());
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+    public InvertedIndex() {
+        try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream(INVERTED_INDEX_FILE_NAME)))
+        {
+            index = (HashMap<String, HashMap<Integer, Integer>>)ois.readObject();
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage());
         }
     }
 

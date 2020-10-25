@@ -217,7 +217,7 @@ public class Bot extends TelegramLongPollingBot {
 
 
     private String getAnswer(String answer) {
-        InvertedIndex index = new InvertedIndex(records);
+        InvertedIndex index = new InvertedIndex();
         List<Integer> list = index.processQuestion(TextFormatter.getFixedWords(answer));
 
         StringBuilder sb = new StringBuilder();
