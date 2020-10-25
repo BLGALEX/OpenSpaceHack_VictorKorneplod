@@ -1,11 +1,10 @@
 package tests;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import Text.InvertedIndex;
+import Text.TextFormatter;
 import storing.Record;
 import storing.ParserExcel;
 
@@ -15,9 +14,56 @@ import static tests.TestData.DATABASE_FILE_NAME;
 public class TestGenerator {
 
     public static void main(String[] args) {
-        ArrayList<Record> records = ParserExcel.parse(DATABASE_FILE_NAME);
-        exportTests(records);
-        TestRunner.runTests(new InvertedIndex(records));
+//        ArrayList<Record> records = ParserExcel.parse(DATABASE_FILE_NAME);
+//        exportTests(records);
+//        TestRunner.runTests(new InvertedIndex(records));
+//
+//        File file = new File("pozhaluista_ne_padai.txt");
+//        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+//            HashMap<String, HashMap<Integer, Integer>> index = new HashMap<>();
+//            for (int i = 1; i <= 289; ++i) {
+//                Integer first = Integer.parseInt(reader.readLine()) - 1;
+//                String second = reader.readLine();
+//                String third = reader.readLine();
+//                String fourth = reader.readLine();
+//                for (String word : second.split(" ")) {
+//                    if (!index.containsKey(word)) {
+//                        index.put(word, new HashMap<>());
+//                    }
+//                    Map<Integer, Integer> mp = index.get(word);
+//                    mp.put(first, mp.getOrDefault(first, 0) + 1);
+//                }
+//                for (String word : third.split(" ")) {
+//                    if (!index.containsKey(word)) {
+//                        index.put(word, new HashMap<>());
+//                    }
+//                    Map<Integer, Integer> mp = index.get(word);
+//                    mp.put(first, mp.getOrDefault(first - 1, 0) + 2);
+//                }
+//                for (String word : fourth.split(" ")) {
+//                    if (!index.containsKey(word)) {
+//                        index.put(word, new HashMap<>());
+//                    }
+//                    Map<Integer, Integer> mp = index.get(word);;
+//                    mp.put(first - 1, mp.getOrDefault(first - 1, 0) + 2);
+//                }
+//            }
+//
+//            try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("kakoi.dat"))) {
+//                oos.writeObject(index);
+//            } catch(Exception e){
+//                System.out.println(e.getMessage());
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
+        List<Record> records = ParserExcel.parse(DATABASE_FILE_NAME);
+        InvertedIndex index = new InvertedIndex(records);
+
+        System.out.println(index.processQuestion(TextFormatter.getFixedWords("Как потратить бонусные рубли")));
+
+        int counter = 0;
     }
 
     public static void exportTests(List<Record> records) {
