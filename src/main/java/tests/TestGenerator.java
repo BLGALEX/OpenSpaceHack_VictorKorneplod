@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import Text.InvertedIndex;
 import storing.Record;
 import storing.ParserExcel;
 
@@ -16,13 +17,18 @@ public class TestGenerator {
     public static void main(String[] args) {
         ArrayList<Record> records = ParserExcel.parse(DATABASE_FILE_NAME);
         exportTests(records);
+        TestRunner.runTests(new InvertedIndex(records));
     }
 
     public static void exportTests(List<Record> records) {
         try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(TESTS_FILE_NAME)))
         {
             ArrayList<Test> tests = makeTests(records);
+            Integer size = tests.size();
+            oos.writeObject(size);
             for (Test test : tests) {
+                if (test.getInput() == null || test.getInput().isEmpty())
+                    continue;
                 oos.writeObject(test);
             }
         } catch(Exception e){

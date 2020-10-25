@@ -145,6 +145,10 @@ public class TextFormatter {
             HttpClient httpClient = HttpClientBuilder.create().build();
             HttpResponse response = httpClient.execute(post);
             result = EntityUtils.toString(response.getEntity());
+            System.out.println(response.getStatusLine());
+            if (response.getStatusLine().getStatusCode() == 429) {
+                System.out.println();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
