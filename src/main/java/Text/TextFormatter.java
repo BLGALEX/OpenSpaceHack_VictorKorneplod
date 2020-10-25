@@ -6,7 +6,7 @@ import java.util.*;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import jsonModel.CorrectionJson;
+import jsonModel.*;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -23,7 +23,7 @@ public class TextFormatter {
     // в .gitignore. В рамках хакатона пусть ключ будет публичным.
     private static final String API_KEY = "165f7b51cef1b84f577a130793205dbdaec40308";
 
-    private static Set<String> wordsToRemove = new HashSet<>(
+    private static final Set<String> wordsToRemove = new HashSet<>(
             Arrays.asList(
                     "как",
                     "по",
@@ -41,13 +41,15 @@ public class TextFormatter {
                     "в",
                     "общий",
                     "умолчание",
-                    "через"
+                    "через",
+                    ",", ".", "-", "_", "+", "\"",
+                    "\'", "\"\"", " ", "", "\n"
             )
     );
 
     private static final Map<Character, Character> enToRus;
     static {
-        Map<Character, Character> tMap = new HashMap<Character, Character>();
+        Map<Character, Character> tMap = new HashMap<>();
         tMap.put('q', 'й'); tMap.put('w', 'ц');
         tMap.put('e', 'у'); tMap.put('r', 'к');
         tMap.put('t', 'е'); tMap.put('y', 'н');
@@ -77,15 +79,14 @@ public class TextFormatter {
         try{
             String correctionJsonText = sendPOST(apiCorrectionString, validKeyboardLayoutText);
             String correctionText = parseCorrectToString(correctionJsonText);
-            //System.out.println("1 : " + correctionText);
 
             String normalizedJsonText = sendPOST(apiNormilizeString, correctionText);
             words = Arrays.asList(parseNormToString(normalizedJsonText).split(" "));
-            //System.out.println("2 : " + correctionText);
         }
         catch (Exception e) {
             e.printStackTrace();
         }
+
         List<String> validWords = new ArrayList<>();
         for (String w : words) {
             if (!wordsToRemove.contains(w)) {
@@ -96,16 +97,35 @@ public class TextFormatter {
     }
 
     private static String parseCorrectToString(String text) {
-        System.out.println("ParseCorrect: " + text);
-        JsonObject o =  new JsonParser().parse(text).getAsJsonObject();
-        System.out.println(o.toString());
-        return text;
+        Gson gson = new Gson();
+        CorrectionJson obj = gson.fromJson(text.substring(1, text.length() - 1), CorrectionJson.class);
+        List<SpellingCorrectionTokenJson> tokens = obj.annotations.spellingCorrectionToken;
+
+        StringBuilder sb = new StringBuilder();
+        for (SpellingCorrectionTokenJson t : tokens) {
+            if (!wordsToRemove.contains(t.value)){
+                sb.append(t.value);
+                sb.append(' ');
+            }
+        }
+        sb.delete(sb.length(), sb.length());
+        return sb.toString();
     }
 
     private static String parseNormToString(String text) {
-        System.out.println("ParseNorm: " + text);
         Gson gson = new Gson();
-        return text;
+        LemmatizationJson obj = gson.fromJson(text.substring(1, text.length() - 1), LemmatizationJson.class);
+        List<LemmaJson> lemmas = obj.annotations.lemmas;
+
+        StringBuilder sb = new StringBuilder();
+        for (LemmaJson t : lemmas) {
+            if (!wordsToRemove.contains(t.value)){
+                sb.append(t.value);
+                sb.append(' ');
+            }
+        }
+        sb.delete(sb.length(), sb.length());
+        return sb.toString();
     }
 
     private static String sendPOST(String url, String text) throws IOException {
@@ -141,13 +161,8 @@ public class TextFormatter {
     }
 
     public static void main(String[] args) {
-        String text = "Огурец агурец агурцы огрец.";
-        try {
-            List<String> res = getFixedWords(text);
-            //System.out.println(res.toString());
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        String text = "Еду в магазин гучи, в санкпетербурге - она жрет мй хуй как будта это бургер";
+        List<String> res = getFixedWords(text);
+        System.out.println(res);
     }
 }

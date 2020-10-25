@@ -6,8 +6,8 @@ import com.google.gson.annotations.SerializedName;
 
 public class AnnotationsLemmaJson {
 
-    @SerializedName("spelling-correction-token")
+    @SerializedName("lemma")
     @Expose
-    public List<LemmaJson> spellingCorrectionToken = null;
+    public List<LemmaJson> lemmas = null;
 
 }

@@ -9,5 +9,5 @@ public class LemmatizationJson {
     public String text;
     @SerializedName("annotations")
     @Expose
-    public AnnotationsLemmaJson lemma;
+    public AnnotationsLemmaJson annotations;
 }
