@@ -97,8 +97,8 @@ public class TextFormatter {
 
     private static String parseCorrectToString(String text) {
         System.out.println("ParseCorrect: " + text);
-        new JsonParser().parse(text).getAsJsonObject();
-        //JSONArray a = gson.fromJson(text, CorrectionJson.class);
+        JsonObject o =  new JsonParser().parse(text).getAsJsonObject();
+        System.out.println(o.toString());
         return text;
     }
 
