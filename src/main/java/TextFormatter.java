@@ -3,6 +3,7 @@ import java.util.*;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import jsonModel.CorrectionJson;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -72,11 +73,11 @@ public class TextFormatter {
         List<String> words = new ArrayList<>();
         try{
             String correctionJsonText = sendPOST(apiCorrectionString, validKeyboardLayoutText);
-            String correctionText = parseToString(correctionJsonText);
+            String correctionText = parseCorrectToString(correctionJsonText);
             //System.out.println("1 : " + correctionText);
 
             String normalizedJsonText = sendPOST(apiNormilizeString, correctionText);
-            words = Arrays.asList(parseToString(normalizedJsonText).split(" "));
+            words = Arrays.asList(parseNormToString(normalizedJsonText).split(" "));
             //System.out.println("2 : " + correctionText);
         }
         catch (Exception e) {
@@ -91,8 +92,15 @@ public class TextFormatter {
         return validWords;
     }
 
-    private static String parseToString(String text) {
-        System.out.println(text);
+    private static String parseCorrectToString(String text) {
+        System.out.println("ParseCorrect: " + text);
+        Gson gson = new Gson();
+        //JSONArray a = gson.fromJson(text, CorrectionJson.class);
+        return text;
+    }
+
+    private static String parseNormToString(String text) {
+        System.out.println("ParseNorm: " + text);
         Gson gson = new Gson();
         return text;
     }
