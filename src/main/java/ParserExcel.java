@@ -13,15 +13,13 @@ import storing.RB;
 
 public class ParserExcel {
 
-    public static final String excelFileName = "src/main/resources/Database.xlsx";
-
-    public static ArrayList<Record> parse() {
+    public static ArrayList<Record> parse(String fileName) {
         //инициализируем потоки
         ArrayList<Record> result = new ArrayList<>();
         InputStream inputStream = null;
         XSSFWorkbook workBook = null;
         try {
-            inputStream = new FileInputStream(excelFileName);
+            inputStream = new FileInputStream(fileName);
             workBook = new XSSFWorkbook(inputStream);
         } catch (IOException e) {
             e.printStackTrace();
@@ -84,7 +82,7 @@ public class ParserExcel {
     public static void main(String[] args) {
         ParserExcel Parser = new ParserExcel();
         File file = new File(".");
-        ArrayList<Record> records = parse();
+        ArrayList<Record> records = parse("src/main/resources/Database.xlsx");
         for (Record record: records)
             System.out.println(record + "\n");
     }

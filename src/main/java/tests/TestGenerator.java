@@ -10,6 +10,11 @@ import storing.Record;
 import static tests.TestData.TESTS_FILE_NAME;
 
 public class TestGenerator {
+
+    public static void main(String[] args) {
+
+    }
+
     public static void exportTests(List<Record> records) throws IOException {
         try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(TESTS_FILE_NAME)))
         {
