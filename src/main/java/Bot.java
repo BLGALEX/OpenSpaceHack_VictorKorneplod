@@ -169,19 +169,9 @@ public class Bot extends TelegramLongPollingBot {
         if (message == null || !message.hasText())
             return;
 
-        String messageText = message.getText();
-        if (messageText.substring(0, 9).equals("/question")) {
-            try {
-                int nQuestion = Integer.valueOf(messageText.substring(9, messageText.length()));
-                sendMsg(message, getAnswerSteps(nQuestion));
-            } catch (Exception e) {
-
-            }
-            return;
-        }
-
-        switch (messageText){
+        switch (message.getText()){
             case "/start":
+                System.out.println("5");
                 sendMsg(message, "Привет! Я Бот Офелия банка Открытие!\n\n" +
                 "Выберите нужное действие и я помогу.\n\n" +
                 "Добавить стикеры со мной: https://t.me/addstickers/Ophelia_theBot");
@@ -211,8 +201,19 @@ public class Bot extends TelegramLongPollingBot {
                 sendMsg(message, "Как вы оцениваете мою работу?");
                 break;
             default:
-                String answer = getAnswers(message.getText());
-                sendMsg(message, answer);
+                if (message.getText().substring(0, min(9, message.getText().length())).equals("/question")) {
+                    try {
+                        int nQuestion = Integer.valueOf(message.getText().substring(9, message.getText().length()));
+                        sendMsg(message, getAnswerSteps(nQuestion));
+                    } catch (Exception e) {
+                        sendMsg(message, ANSWER_NOT_FOUND);
+                    }
+                    return;
+                }
+                else {
+                    String answer = getAnswers(message.getText());
+                    sendMsg(message, answer);
+                }
                 break;
         }
     }
