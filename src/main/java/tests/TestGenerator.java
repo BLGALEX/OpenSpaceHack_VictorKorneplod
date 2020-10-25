@@ -6,16 +6,19 @@ import java.util.List;
 import java.util.Random;
 
 import storing.Record;
+import storing.ParserExcel;
 
 import static tests.TestData.TESTS_FILE_NAME;
+import static tests.TestData.DATABASE_FILE_NAME;
 
 public class TestGenerator {
 
     public static void main(String[] args) {
-
+        ArrayList<Record> records = ParserExcel.parse(DATABASE_FILE_NAME);
+        exportTests(records);
     }
 
-    public static void exportTests(List<Record> records) throws IOException {
+    public static void exportTests(List<Record> records) {
         try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(TESTS_FILE_NAME)))
         {
             ArrayList<Test> tests = makeTests(records);
