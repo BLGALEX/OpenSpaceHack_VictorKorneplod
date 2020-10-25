@@ -34,7 +34,7 @@ public class InvertedIndex {
         }
     }
 
-
+    // InvertedIndex.processQuestion(TextFormatter.getFixedWords(****question****));
     public List<Integer> processQuestion(List<String> questionWords) {
         Map<Integer, Integer> idToPrioritySum = new HashMap<>();
         for (String word : questionWords) {
