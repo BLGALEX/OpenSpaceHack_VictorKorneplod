@@ -6,7 +6,9 @@ import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -44,6 +46,7 @@ public class Bot extends TelegramLongPollingBot {
         }
 
     }
+
 
     public void setButtons(SendMessage sendMessage){
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
@@ -123,16 +126,13 @@ public class Bot extends TelegramLongPollingBot {
                 replyKeyboardMarkup.setKeyboard(keyboardRowList);
                 break;
             case "Как вы оцениваете мою работу?":
-                String starEmoji = EmojiParser.parseToUnicode(":gem:");
-                keyboardFirstRow.add(new KeyboardButton(starEmoji + starEmoji + starEmoji + starEmoji + starEmoji));
-                keyboardFirstRow.add(new KeyboardButton(starEmoji + starEmoji + starEmoji + starEmoji));
-
-                keyboardSecondRow.add(new KeyboardButton(starEmoji + starEmoji + starEmoji));
-                keyboardSecondRow.add(new KeyboardButton(starEmoji + starEmoji));
-                keyboardSecondRow.add(new KeyboardButton(starEmoji));
+                String gemEmoji = EmojiParser.parseToUnicode(":gem:");
+                keyboardFirstRow.add(new KeyboardButton(gemEmoji + gemEmoji + gemEmoji));
+                keyboardFirstRow.add(new KeyboardButton(gemEmoji + gemEmoji));
+                keyboardFirstRow.add(new KeyboardButton(gemEmoji));
 
                 keyboardRowList.add(keyboardFirstRow);
-                keyboardRowList.add(keyboardSecondRow);
+
                 replyKeyboardMarkup.setKeyboard(keyboardRowList);
                 break;
             default:
