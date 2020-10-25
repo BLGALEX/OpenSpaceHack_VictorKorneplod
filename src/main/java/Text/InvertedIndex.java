@@ -13,23 +13,21 @@ public class InvertedIndex {
 
     private Map<String, Map<Integer, Integer>> index;
 
-    static List<String> getFixedWords(String text) { return new ArrayList<>(); }
-
     public InvertedIndex(List<Record> records) {
         index = new HashMap<>();
 
         for (Record record : records) {
-            for (String word : getFixedWords(record.getQuestion())) {
+            for (String word : TextFormatter.getFixedWords(record.getQuestion())) {
                 Map<Integer, Integer> mp = index.getOrDefault(word, new HashMap<>());
                 mp.put(record.getId(), mp.getOrDefault(record.getId(), 0) + PRIORITY_QUESTION);
             }
 
-            for (String word : getFixedWords(record.getRequest())) {
+            for (String word : TextFormatter.getFixedWords(record.getRequest())) {
                 Map<Integer, Integer> mp = index.getOrDefault(word, new HashMap<>());
                 mp.put(record.getId(), mp.getOrDefault(record.getId(), 0) + PRIORITY_REQUEST);
             }
 
-            for (String word : getFixedWords(record.getRequest())) {
+            for (String word : TextFormatter.getFixedWords(record.getRequest())) {
                 Map<Integer, Integer> mp = index.getOrDefault(word, new HashMap<>());
                 mp.put(record.getId(), mp.getOrDefault(record.getId(), 0) + PRIORITY_CLARIFICATION);
             }
