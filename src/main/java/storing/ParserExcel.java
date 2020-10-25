@@ -1,5 +1,6 @@
+package storing;
+
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -12,7 +13,8 @@ import java.util.List;
 import storing.Record;
 import storing.RB;
 
-public class Parser_ExcelToJava {
+public class ParserExcel {
+
     public static ArrayList<Record> parse(String fileName) {
         //инициализируем потоки
         ArrayList<Record> result = new ArrayList<>();
@@ -80,8 +82,6 @@ public class Parser_ExcelToJava {
     }
 
     public static void main(String[] args) {
-        Parser_ExcelToJava Parser = new Parser_ExcelToJava();
-        File file = new File(".");
         ArrayList<Record> records = parse("src/main/resources/Database.xlsx");
         for (Record record: records)
             System.out.println(record + "\n");

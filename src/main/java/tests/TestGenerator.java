@@ -6,13 +6,19 @@ import java.util.List;
 import java.util.Random;
 
 import storing.Record;
+import storing.ParserExcel;
 
 import static tests.TestData.TESTS_FILE_NAME;
+import static tests.TestData.DATABASE_FILE_NAME;
 
 public class TestGenerator {
-    public static void exportTests(List<Record> records) throws IOException {
-        File file = new File(TESTS_FILE_NAME);
 
+    public static void main(String[] args) {
+        ArrayList<Record> records = ParserExcel.parse(DATABASE_FILE_NAME);
+        exportTests(records);
+    }
+
+    public static void exportTests(List<Record> records) {
         try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(TESTS_FILE_NAME)))
         {
             ArrayList<Test> tests = makeTests(records);
@@ -24,7 +30,7 @@ public class TestGenerator {
         }
     }
 
-    public static ArrayList<Test> makeTests(List<Record> records) {
+    private static ArrayList<Test> makeTests(List<Record> records) {
         ArrayList<Test> tests = new ArrayList<>();
         tests.addAll(makeTestsCorrectQuestions(records));
         tests.addAll(makeTestsMistakeQuestions(records));
@@ -32,7 +38,7 @@ public class TestGenerator {
         return tests;
     }
 
-    public static ArrayList<Test> makeTestsCorrectQuestions(List<Record> records) {
+    private static ArrayList<Test> makeTestsCorrectQuestions(List<Record> records) {
         ArrayList<Test> tests = new ArrayList<>();
         for (Record record : records) {
             tests.add(new Test(0, record.getQuestion(), record.getId()));
@@ -40,7 +46,7 @@ public class TestGenerator {
         return tests;
     }
 
-    public static ArrayList<Test> makeTestsMistakeQuestions(List<Record> records) {
+    private static ArrayList<Test> makeTestsMistakeQuestions(List<Record> records) {
         ArrayList<Test> tests = new ArrayList<>();
         Random random = new Random();
         for (int i = 0; i < records.size(); ++i) {
