@@ -32,7 +32,7 @@ public class Bot extends TelegramLongPollingBot {
     public static void main(String[] args) {
         ApiContextInitializer.init();
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
-        //invertedIndex = new InvertedIndex();
+        invertedIndex = new InvertedIndex();
         records = ParserExcel.parse(DATABASE_FILE_NAME);
         try{
             telegramBotsApi.registerBot(new Bot());
@@ -222,8 +222,10 @@ public class Bot extends TelegramLongPollingBot {
 
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < min(5, list.size()); i++) {
-            sb.append(list.get(i));
-            sb.append(' ');
+            sb.append(records.get(list.get(i) - 1).getQuestion());
+            sb.append("\n");
+            sb.append("/question" + (i - 1));
+            sb.append("\n\n");
         }
         return sb.toString();
     }
