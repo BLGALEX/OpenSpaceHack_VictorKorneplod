@@ -5,6 +5,7 @@ import java.util.*;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import jsonModel.CorrectionJson;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -96,7 +97,7 @@ public class TextFormatter {
 
     private static String parseCorrectToString(String text) {
         System.out.println("ParseCorrect: " + text);
-        Gson gson = new Gson();
+        new JsonParser().parse(text).getAsJsonObject();
         //JSONArray a = gson.fromJson(text, CorrectionJson.class);
         return text;
     }
