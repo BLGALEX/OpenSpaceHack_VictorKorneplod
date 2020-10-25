@@ -1,11 +1,18 @@
 import java.io.IOException;
 import java.util.*;
-import org.apache.http.client.methods.CloseableHttpResponse;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
+import com.google.gson.Gson;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class TextFormatter {
     // Ключ должен лежать в отдельном файле и должен быть записан
@@ -33,24 +40,25 @@ public class TextFormatter {
                     "через"
             )
     );
-    
-    private static Map<Character, Character> enToRus = new HashMap<Character, Character>() {
-        {
-        enToRus.put('q', 'й'); enToRus.put('w', 'ц');
-        enToRus.put('e', 'у'); enToRus.put('r', 'к');
-        enToRus.put('t', 'е'); enToRus.put('y', 'н');
-        enToRus.put('u', 'г'); enToRus.put('i', 'ш');
-        enToRus.put('o', 'щ'); enToRus.put('p', 'з');
-        enToRus.put('a', 'ф'); enToRus.put('s', 'ы');
-        enToRus.put('d', 'в'); enToRus.put('f', 'а');
-        enToRus.put('g', 'п'); enToRus.put('h', 'р');
-        enToRus.put('j', 'о'); enToRus.put('k', 'л');
-        enToRus.put('l', 'д'); enToRus.put('z', 'я');
-        enToRus.put('x', 'ч'); enToRus.put('c', 'с');
-        enToRus.put('v', 'м'); enToRus.put('b', 'и');
-        enToRus.put('n', 'т'); enToRus.put('m', 'ь');
+
+    private static final Map<Character, Character> enToRus;
+    static {
+        Map<Character, Character> tMap = new HashMap<Character, Character>();
+        tMap.put('q', 'й'); tMap.put('w', 'ц');
+        tMap.put('e', 'у'); tMap.put('r', 'к');
+        tMap.put('t', 'е'); tMap.put('y', 'н');
+        tMap.put('u', 'г'); tMap.put('i', 'ш');
+        tMap.put('o', 'щ'); tMap.put('p', 'з');
+        tMap.put('a', 'ф'); tMap.put('s', 'ы');
+        tMap.put('d', 'в'); tMap.put('f', 'а');
+        tMap.put('g', 'п'); tMap.put('h', 'р');
+        tMap.put('j', 'о'); tMap.put('k', 'л');
+        tMap.put('l', 'д'); tMap.put('z', 'я');
+        tMap.put('x', 'ч'); tMap.put('c', 'с');
+        tMap.put('v', 'м'); tMap.put('b', 'и');
+        tMap.put('n', 'т'); tMap.put('m', 'ь');
+        enToRus = Collections.unmodifiableMap(tMap);
     }
-    };
 
 
     private TextFormatter(){};
@@ -60,40 +68,54 @@ public class TextFormatter {
         final String apiCorrectionString =
             "http://api.ispras.ru/texterra/v1/nlp?targetType=spelling-correction-token&apikey=" + API_KEY;
         final String apiNormilizeString =
-            "http://api.ispras.ru/texterra/v1/nlp?targetType=spelling-correction-token&apikey=" + API_KEY;
-        List<String> validWords = new ArrayList<>();
+            "http://api.ispras.ru/texterra/v1/nlp?targetType=lemma&apikey=" + API_KEY;
+        List<String> words = new ArrayList<>();
         try{
-            String correctionText = sendPOST(apiCorrectionString, validKeyboardLayoutText);
-            correctionText = parseToString(correctionText);
+            String correctionJsonText = sendPOST(apiCorrectionString, validKeyboardLayoutText);
+            String correctionText = parseToString(correctionJsonText);
+            //System.out.println("1 : " + correctionText);
 
-            String normalizedText = sendPOST(apiNormilizeString, correctionText);
-            validWords = Arrays.asList(parseToString(normalizedText).split(" "));
+            String normalizedJsonText = sendPOST(apiNormilizeString, correctionText);
+            words = Arrays.asList(parseToString(normalizedJsonText).split(" "));
+            //System.out.println("2 : " + correctionText);
         }
-        catch (Exception e) {}
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        List<String> validWords = new ArrayList<>();
+        for (String w : words) {
+            if (!wordsToRemove.contains(w)) {
+                validWords.add(w);
+            }
+        }
         return validWords;
     }
 
-    private static String parseToString(String string) {
-        return null;
+    private static String parseToString(String text) {
+        System.out.println(text);
+        Gson gson = new Gson();
+        return text;
     }
 
     private static String sendPOST(String url, String text) throws IOException {
+        StringBuilder json = new StringBuilder();
+        json.append("[{ ");
+        json.append("\"text\" : \"" + text + "\"");
+        json.append(" }]");
+
         HttpPost post = new HttpPost(url);
         post.addHeader("Accept", "application/json");
         post.addHeader("Content-Type", "application/json");
 
-        StringBuilder json = new StringBuilder();
-        json.append("{");
-        json.append("\"text\":\"" + text + "\"");
-        json.append("}");
+        post.setEntity(new StringEntity(json.toString(), ContentType.APPLICATION_JSON));
 
-        post.setEntity(new StringEntity(json.toString()));
-
-        String result;
-        try (CloseableHttpClient httpClient = HttpClients.createDefault();
-             CloseableHttpResponse response = httpClient.execute(post)) {
-
+        String result = "";
+        try {
+            HttpClient httpClient = HttpClientBuilder.create().build();
+            HttpResponse response = httpClient.execute(post);
             result = EntityUtils.toString(response.getEntity());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return result;
@@ -105,5 +127,16 @@ public class TextFormatter {
             sb.append(enToRus.getOrDefault(c, c));
         }
         return sb.toString();
+    }
+
+    public static void main(String[] args) {
+        String text = "Огурец агурец агурцы огрец.";
+        try {
+            List<String> res = getFixedWords(text);
+            //System.out.println(res.toString());
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }
