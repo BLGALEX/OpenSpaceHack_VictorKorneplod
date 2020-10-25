@@ -11,8 +11,6 @@ import static tests.TestData.TESTS_FILE_NAME;
 
 public class TestGenerator {
     public static void exportTests(List<Record> records) throws IOException {
-        File file = new File(TESTS_FILE_NAME);
-
         try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(TESTS_FILE_NAME)))
         {
             ArrayList<Test> tests = makeTests(records);

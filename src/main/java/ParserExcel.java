@@ -11,14 +11,17 @@ import java.util.List;
 import storing.Record;
 import storing.RB;
 
-public class ParserExcelToJava {
-    public static ArrayList<Record> parse(String fileName) {
+public class ParserExcel {
+
+    public static final String excelFileName = "src/main/resources/Database.xlsx";
+
+    public static ArrayList<Record> parse() {
         //инициализируем потоки
         ArrayList<Record> result = new ArrayList<>();
         InputStream inputStream = null;
         XSSFWorkbook workBook = null;
         try {
-            inputStream = new FileInputStream(fileName);
+            inputStream = new FileInputStream(excelFileName);
             workBook = new XSSFWorkbook(inputStream);
         } catch (IOException e) {
             e.printStackTrace();
@@ -79,9 +82,9 @@ public class ParserExcelToJava {
     }
 
     public static void main(String[] args) {
-        ParserExcelToJava Parser = new ParserExcelToJava();
+        ParserExcel Parser = new ParserExcel();
         File file = new File(".");
-        ArrayList<Record> records = parse("src/main/resources/Database.xlsx");
+        ArrayList<Record> records = parse();
         for (Record record: records)
             System.out.println(record + "\n");
     }
