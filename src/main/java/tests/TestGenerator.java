@@ -30,7 +30,7 @@ public class TestGenerator {
         }
     }
 
-    public static ArrayList<Test> makeTests(List<Record> records) {
+    private static ArrayList<Test> makeTests(List<Record> records) {
         ArrayList<Test> tests = new ArrayList<>();
         tests.addAll(makeTestsCorrectQuestions(records));
         tests.addAll(makeTestsMistakeQuestions(records));
@@ -38,7 +38,7 @@ public class TestGenerator {
         return tests;
     }
 
-    public static ArrayList<Test> makeTestsCorrectQuestions(List<Record> records) {
+    private static ArrayList<Test> makeTestsCorrectQuestions(List<Record> records) {
         ArrayList<Test> tests = new ArrayList<>();
         for (Record record : records) {
             tests.add(new Test(0, record.getQuestion(), record.getId()));
@@ -46,7 +46,7 @@ public class TestGenerator {
         return tests;
     }
 
-    public static ArrayList<Test> makeTestsMistakeQuestions(List<Record> records) {
+    private static ArrayList<Test> makeTestsMistakeQuestions(List<Record> records) {
         ArrayList<Test> tests = new ArrayList<>();
         Random random = new Random();
         for (int i = 0; i < records.size(); ++i) {
