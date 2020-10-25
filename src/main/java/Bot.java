@@ -1,3 +1,5 @@
+import Text.InvertedIndex;
+import Text.TextFormatter;
 import com.vdurmont.emoji.EmojiParser;
 
 import org.telegram.telegrambots.ApiContextInitializer;
@@ -13,18 +15,27 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
+import storing.ParserExcel;
+import storing.Record;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.Integer.min;
+import static tests.TestData.DATABASE_FILE_NAME;
+
 public class Bot extends TelegramLongPollingBot {
+
+    static InvertedIndex invertedIndex;
+    static List<Record> records;
 
     public static void main(String[] args) {
         ApiContextInitializer.init();
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
+        //invertedIndex = new InvertedIndex();
+        records = ParserExcel.parse(DATABASE_FILE_NAME);
         try{
             telegramBotsApi.registerBot(new Bot());
-
         } catch (TelegramApiRequestException e){
             e.printStackTrace();
         }
@@ -152,46 +163,80 @@ public class Bot extends TelegramLongPollingBot {
 
     public void onUpdateReceived(Update update) {
         Message message = update.getMessage();
+        if (message == null || !message.hasText())
+            return;
 
-
-        if(message!=null && message.hasText()){
-            switch (message.getText()){
-                case "/start":
-                    sendMsg(message, "Привет! Я Бот Офелия банка Открытие!\n\n" +
-                    "Выберите нужное действие и я помогу.\n\n" +
-                    "Добавить стикеры со мной: https://t.me/addstickers/Ophelia_theBot");
-                    break;
-                case "Обратно":
-                    sendMsg(message, "Ок");
-                    break;
-                case "Ввести вопрос":
-                    sendMsg(message, "Напишите, что вы хотите найти?");
-                    break;
-                case "Категории":
-                    sendMsg(message, "Выберите категорию");
-                    break;
-                case "Заявки":
-                    sendMsg(message, "Выберите нужный сервис");
-                    break;
-                case "Прочее":
-                    sendMsg(message, "Выберите сервис");
-                    break;
-                case "Выдача справок":
-                    sendMsg(message, "Выберите форму справки");
-                    break;
-                case "Открой возможности":
-                    sendMsg(message, "Что вы бы улучшили?");
-                    break;
-                case "Оставить отзыв":
-                    sendMsg(message, "Как вы оцениваете мою работу?");
-                    break;
-                default:
-                    sendMsg(message, message.getText());
-                    break;
+        String messageText = message.getText();
+        if (messageText.substring(0, 9).equals("/question")) {
+            try {
+                int nQuestion = Integer.valueOf(messageText.substring(9, messageText.length()));
+                sendMsg(message, getAnswerSteps(nQuestion));
+            } catch (Exception e) {
 
             }
+            return;
         }
 
+        switch (messageText){
+            case "/start":
+                sendMsg(message, "Привет! Я Бот Офелия банка Открытие!\n\n" +
+                "Выберите нужное действие и я помогу.\n\n" +
+                "Добавить стикеры со мной: https://t.me/addstickers/Ophelia_theBot");
+                break;
+            case "Обратно":
+                sendMsg(message, "Ок");
+                break;
+            case "Ввести вопрос":
+                sendMsg(message, "Напишите, что вы хотите найти?");
+                break;
+            case "Категории":
+                sendMsg(message, "Выберите категорию");
+                break;
+            case "Заявки":
+                sendMsg(message, "Выберите нужный сервис");
+                break;
+            case "Прочее":
+                sendMsg(message, "Выберите сервис");
+                break;
+            case "Выдача справок":
+                sendMsg(message, "Выберите форму справки");
+                break;
+            case "Открой возможности":
+                sendMsg(message, "Что вы бы улучшили?");
+                break;
+            case "Оставить отзыв":
+                sendMsg(message, "Как вы оцениваете мою работу?");
+                break;
+            default:
+                String answer = getAnswer(message.getText());
+                sendMsg(message, answer);
+                break;
+        }
+    }
+
+
+
+    private String getAnswer(String answer) {
+        InvertedIndex index = new InvertedIndex(records);
+        List<Integer> list = index.processQuestion(TextFormatter.getFixedWords(answer));
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < min(5, list.size()); i++) {
+            sb.append(list.get(i));
+            sb.append(' ');
+        }
+        return sb.toString();
+    }
+
+    String getAnswerSteps(int i) {
+        StringBuilder sb = new StringBuilder();
+        int nSteps = records.get(i).getnSteps();
+        List<String> steps = records.get(i).getSteps();
+        for (int j = 0; j < nSteps; j++) {
+            sb.append(steps.get(j));
+            sb.append('\n');
+        }
+        return sb.toString();
     }
 
     public String getBotUsername() {
