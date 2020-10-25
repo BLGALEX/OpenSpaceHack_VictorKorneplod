@@ -158,7 +158,8 @@ public class TextFormatter {
 
     public static String fixKeyboardLayout(String string) {
         StringBuilder sb = new StringBuilder();
-        for (char c : string.toCharArray()) {
+        for (int i = 0; i < string.length(); i++) {
+            char c = string.charAt(i);
             sb.append(enToRus.getOrDefault(c, c));
         }
         return sb.toString();

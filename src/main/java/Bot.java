@@ -1,10 +1,14 @@
+import com.vdurmont.emoji.EmojiParser;
+
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -14,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Bot extends TelegramLongPollingBot {
+
     public static void main(String[] args) {
         ApiContextInitializer.init();
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
@@ -41,6 +46,7 @@ public class Bot extends TelegramLongPollingBot {
         }
 
     }
+
 
     public void setButtons(SendMessage sendMessage){
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
@@ -77,9 +83,57 @@ public class Bot extends TelegramLongPollingBot {
                 keyboardRowList.add(keyboardFourthRow);
                 replyKeyboardMarkup.setKeyboard(keyboardRowList);
                 break;
-            case "Выберите форму заявки":
+            case "Выберите нужный сервис":
+                keyboardFirstRow.add(new KeyboardButton("Выдача справок"));
+                keyboardFirstRow.add(new KeyboardButton("Открой возможности"));
+
+                keyboardRowList.add(keyboardFirstRow);
+                replyKeyboardMarkup.setKeyboard(keyboardRowList);
                 break;
             case "Выберите сервис":
+                keyboardFirstRow.add(new KeyboardButton("Поиск контакта"));
+                keyboardFirstRow.add(new KeyboardButton("Обратно"));
+
+                keyboardSecondRow.add(new KeyboardButton("Оставить отзыв"));
+
+                keyboardRowList.add(keyboardFirstRow);
+                keyboardRowList.add(keyboardSecondRow);
+                replyKeyboardMarkup.setKeyboard(keyboardRowList);
+                break;
+            case "Выберите форму справки":
+                keyboardFirstRow.add(new KeyboardButton("Выписка с места работы"));
+
+                keyboardSecondRow.add(new KeyboardButton("НДФЛ"));
+                keyboardSecondRow.add(new KeyboardButton("Обратно"));
+
+                keyboardRowList.add(keyboardFirstRow);
+                keyboardRowList.add(keyboardSecondRow);
+
+                replyKeyboardMarkup.setKeyboard(keyboardRowList);
+                break;
+            case "Что вы бы улучшили?":
+                keyboardFirstRow.add(new KeyboardButton("Сайт"));
+                keyboardFirstRow.add(new KeyboardButton("Мобильное приложение"));
+
+                keyboardSecondRow.add(new KeyboardButton("Работа с клиентами"));
+                keyboardSecondRow.add(new KeyboardButton("Другое"));
+
+                keyboardThirdRow.add(new KeyboardButton("Обратно"));
+
+                keyboardRowList.add(keyboardFirstRow);
+                keyboardRowList.add(keyboardSecondRow);
+                keyboardRowList.add(keyboardThirdRow);
+                replyKeyboardMarkup.setKeyboard(keyboardRowList);
+                break;
+            case "Как вы оцениваете мою работу?":
+                String gemEmoji = EmojiParser.parseToUnicode(":gem:");
+                keyboardFirstRow.add(new KeyboardButton(gemEmoji + gemEmoji + gemEmoji));
+                keyboardFirstRow.add(new KeyboardButton(gemEmoji + gemEmoji));
+                keyboardFirstRow.add(new KeyboardButton(gemEmoji));
+
+                keyboardRowList.add(keyboardFirstRow);
+
+                replyKeyboardMarkup.setKeyboard(keyboardRowList);
                 break;
             default:
                 keyboardFirstRow.add(new KeyboardButton("Ввести вопрос"));
@@ -117,10 +171,19 @@ public class Bot extends TelegramLongPollingBot {
                     sendMsg(message, "Выберите категорию");
                     break;
                 case "Заявки":
-                    sendMsg(message, "Выберите форму заявки");
+                    sendMsg(message, "Выберите нужный сервис");
                     break;
                 case "Прочее":
                     sendMsg(message, "Выберите сервис");
+                    break;
+                case "Выдача справок":
+                    sendMsg(message, "Выберите форму справки");
+                    break;
+                case "Открой возможности":
+                    sendMsg(message, "Что вы бы улучшили?");
+                    break;
+                case "Оставить отзыв":
+                    sendMsg(message, "Как вы оцениваете мою работу?");
                     break;
                 default:
                     sendMsg(message, message.getText());

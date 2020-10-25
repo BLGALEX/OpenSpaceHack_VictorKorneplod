@@ -1,7 +1,21 @@
+Основной способ
+_____________________________________________________________________________________
+Для запуска бота необходимо скачать файл VictorImage.tar
+(можно с репозитория "https://github.com/BLGALEX/OpenSpaceHack_VictorKorneplod")
+и установить Docker для вашей ОС
+Запускаем консоль в папке, где находится файл VictorImage.tar, и пишем
+1) docker load -i VictorImage.tar
+2)docker run victorbot
+Для остановки бота нужно написать в консоли
+docker stop victorbot
+_______________________________________________________________________________________
+
+
+Второй способ (НЕ РЕКОМЕНДУЕТСЯ)
 Для запуска бота понадобится intellij idea и jdk версии 8 или выше
 
 1) Запускаем intellij idea переходим File> New> Projet from Version Control.
-Указываем в поле URL ссылку на репозиторий и жмем clonе.
+Указываем в поле URL ссылку "https://github.com/BLGALEX/OpenSpaceHack_VictorKorneplod "на репозиторий и жмем clonе.
 
 2) После загрузки всех файлов File> Project Structure> Project Settings> Modules> Sources.
 Указываем в поле "Language level" номер версии своего JDK. Жмём Ок.
