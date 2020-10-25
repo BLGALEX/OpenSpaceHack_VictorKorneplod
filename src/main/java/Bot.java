@@ -28,58 +28,16 @@ public class Bot extends TelegramLongPollingBot {
 
     public void sendMsg(Message message, String text){
         SendMessage sendMessage = new SendMessage();
-        sendMessage.enableMarkdown(true);
+        sendMessage.enableMarkdown(false);
         sendMessage.setChatId(message.getChatId().toString());
         sendMessage.setReplyToMessageId(message.getMessageId());
         sendMessage.setText(text);
         try{
             setButtons(sendMessage);
-            setButton(sendMessage);
             execute(sendMessage);
         }
         catch (TelegramApiException e){
             e.printStackTrace();
-        }
-
-    }
-
-    public void setButton(SendMessage sendMessage){
-        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
-        sendMessage.setReplyMarkup(replyKeyboardMarkup);
-        replyKeyboardMarkup.setSelective(true);
-        replyKeyboardMarkup.setResizeKeyboard(true);
-        replyKeyboardMarkup.setOneTimeKeyboard(false);
-
-        List<KeyboardRow> keyboardRowList = new ArrayList<>();
-        KeyboardRow keyboardFirstRow = new KeyboardRow();
-        keyboardFirstRow.add(new KeyboardButton("/help"));
-        keyboardFirstRow.add(new KeyboardButton("/test"));
-
-        keyboardRowList.add(keyboardFirstRow);
-        replyKeyboardMarkup.setKeyboard(keyboardRowList);
-
-    }
-
-    public void onUpdateReceived(Update update) {
-        Message message = update.getMessage();
-
-
-        if(message!=null && message.hasText()){
-            switch (message.getText()){
-                case "/help":
-                    sendMsg(message, "чем помочь?");
-                    break;
-                case "/test":
-                    sendMsg(message, "я готов");
-                    break;
-                case "/start":
-                    sendMsg(message, "я готов");
-                    break;
-                default:
-                    sendMsg(message, message.getText());
-                    break;
-
-            }
         }
 
     }
@@ -91,18 +49,90 @@ public class Bot extends TelegramLongPollingBot {
         replyKeyboardMarkup.setResizeKeyboard(true);
         replyKeyboardMarkup.setOneTimeKeyboard(false);
 
-        List<KeyboardRow> keyboardRowList = new ArrayList();
+        List<KeyboardRow> keyboardRowList = new ArrayList<>();
         KeyboardRow keyboardFirstRow = new KeyboardRow();
+        KeyboardRow keyboardSecondRow = new KeyboardRow();
+        KeyboardRow keyboardThirdRow = new KeyboardRow();
+        KeyboardRow keyboardFourthRow = new KeyboardRow();
 
-        keyboardFirstRow.add(new KeyboardButton("Ввести вопрос"));
-        keyboardFirstRow.add(new KeyboardButton("Категории"));
+        switch (sendMessage.getText()) {
+            case "Напишите, что вы хотите найти?":
+                break;
+            case "Выберите категорию":
+                keyboardFirstRow.add(new KeyboardButton("Карты"));
+                keyboardFirstRow.add(new KeyboardButton("Переводы"));
 
-        keyboardRowList.add(keyboardFirstRow);
-        replyKeyboardMarkup.setKeyboard(keyboardRowList);
+                keyboardSecondRow.add(new KeyboardButton("Платежи"));
+                keyboardSecondRow.add(new KeyboardButton("Счета"));
+
+                keyboardThirdRow.add(new KeyboardButton("Вклады"));
+                keyboardThirdRow.add(new KeyboardButton("Инвестиции"));
+
+                keyboardFourthRow.add(new KeyboardButton("Кредиты"));
+                keyboardFourthRow.add(new KeyboardButton("Профиль"));
+
+                keyboardRowList.add(keyboardFirstRow);
+                keyboardRowList.add(keyboardSecondRow);
+                keyboardRowList.add(keyboardThirdRow);
+                keyboardRowList.add(keyboardFourthRow);
+                replyKeyboardMarkup.setKeyboard(keyboardRowList);
+                break;
+            case "Выберите форму заявки":
+                break;
+            case "Выберите сервис":
+                break;
+            default:
+                keyboardFirstRow.add(new KeyboardButton("Ввести вопрос"));
+                keyboardFirstRow.add(new KeyboardButton("Категории"));
+
+                keyboardSecondRow.add(new KeyboardButton("Заявки"));
+                keyboardSecondRow.add(new KeyboardButton("Прочее"));
+
+                keyboardRowList.add(keyboardFirstRow);
+                keyboardRowList.add(keyboardSecondRow);
+                replyKeyboardMarkup.setKeyboard(keyboardRowList);
+                break;
+        }
+
+    }
+
+    public void onUpdateReceived(Update update) {
+        Message message = update.getMessage();
+
+
+        if(message!=null && message.hasText()){
+            switch (message.getText()){
+                case "/start":
+                    sendMsg(message, "Привет! Я Бот Офелия банка Открытие!\n\n" +
+                    "Выберите нужное действие и я помогу.\n\n" +
+                    "Добавить стикеры со мной: https://t.me/addstickers/Ophelia_theBot");
+                    break;
+                case "Обратно":
+                    sendMsg(message, "Ок");
+                    break;
+                case "Ввести вопрос":
+                    sendMsg(message, "Напишите, что вы хотите найти?");
+                    break;
+                case "Категории":
+                    sendMsg(message, "Выберите категорию");
+                    break;
+                case "Заявки":
+                    sendMsg(message, "Выберите форму заявки");
+                    break;
+                case "Прочее":
+                    sendMsg(message, "Выберите сервис");
+                    break;
+                default:
+                    sendMsg(message, message.getText());
+                    break;
+
+            }
+        }
+
     }
 
     public String getBotUsername() {
-        return "VictorKorneplodChatBot";
+        return "OPB_Ophelia";
     }
 
     public String getBotToken() {
