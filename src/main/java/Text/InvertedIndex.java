@@ -1,3 +1,5 @@
+package Text;
+
 import storing.Record;
 
 import java.util.ArrayList;
