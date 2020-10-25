@@ -1,7 +1,6 @@
 import Text.InvertedIndex;
 import Text.TextFormatter;
 import com.vdurmont.emoji.EmojiParser;
-
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -26,8 +25,10 @@ import static tests.TestData.DATABASE_FILE_NAME;
 
 public class Bot extends TelegramLongPollingBot {
 
-    static InvertedIndex invertedIndex;
-    static List<Record> records;
+    private static InvertedIndex invertedIndex;
+    private static List<Record> records;
+    public static String ANSWER_NOT_FOUND = "Пожалуйста, уточните запрос.";
+
 
     public static void main(String[] args) {
         ApiContextInitializer.init();
@@ -43,6 +44,7 @@ public class Bot extends TelegramLongPollingBot {
 
 
     public void sendMsg(Message message, String text){
+        //if ()
         SendMessage sendMessage = new SendMessage();
         sendMessage.enableMarkdown(false);
         sendMessage.setChatId(message.getChatId().toString());
@@ -74,6 +76,7 @@ public class Bot extends TelegramLongPollingBot {
 
         switch (sendMessage.getText()) {
             case "Напишите, что вы хотите найти?":
+
                 break;
             case "Выберите категорию":
                 keyboardFirstRow.add(new KeyboardButton("Карты"));
@@ -208,7 +211,7 @@ public class Bot extends TelegramLongPollingBot {
                 sendMsg(message, "Как вы оцениваете мою работу?");
                 break;
             default:
-                String answer = getAnswer(message.getText());
+                String answer = getAnswers(message.getText());
                 sendMsg(message, answer);
                 break;
         }
@@ -216,9 +219,12 @@ public class Bot extends TelegramLongPollingBot {
 
 
 
-    private String getAnswer(String answer) {
+    private String getAnswers(String answer) {
         InvertedIndex index = new InvertedIndex();
         List<Integer> list = index.processQuestion(TextFormatter.getFixedWords(answer));
+        if (list.get(0) == -1) {
+            return ANSWER_NOT_FOUND;
+        }
 
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < min(5, list.size()); i++) {
