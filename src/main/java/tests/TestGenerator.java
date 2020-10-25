@@ -17,7 +17,7 @@ public class TestGenerator {
     public static void main(String[] args) {
         ArrayList<Record> records = ParserExcel.parse(DATABASE_FILE_NAME);
         exportTests(records);
-        TestRunner.runTests(new InvertedIndex(new ArrayList<>()));
+        TestRunner.runTests(new InvertedIndex(records));
     }
 
     public static void exportTests(List<Record> records) {
