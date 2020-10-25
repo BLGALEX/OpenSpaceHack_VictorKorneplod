@@ -224,7 +224,7 @@ public class Bot extends TelegramLongPollingBot {
         for (int i = 0; i < min(5, list.size()); i++) {
             sb.append(records.get(list.get(i) - 1).getQuestion());
             sb.append("\n");
-            sb.append("/question" + (i - 1));
+            sb.append("/question" + (list.get(i) - 1));
             sb.append("\n\n");
         }
         return sb.toString();
