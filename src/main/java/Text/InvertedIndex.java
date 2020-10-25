@@ -74,7 +74,6 @@ public class InvertedIndex {
                     writer.println();
 
                     writer.flush();
-                    System.out.println("Строка #" + counter + " считана, охуенно!");
                     ++counter;
 
                     try {

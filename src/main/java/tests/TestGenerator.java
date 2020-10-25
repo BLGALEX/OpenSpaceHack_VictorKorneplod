@@ -18,50 +18,52 @@ public class TestGenerator {
 //        exportTests(records);
 //        TestRunner.runTests(new InvertedIndex(records));
 //
-//        File file = new File("pozhaluista_ne_padai.txt");
-//        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-//            HashMap<String, HashMap<Integer, Integer>> index = new HashMap<>();
-//            for (int i = 1; i <= 289; ++i) {
-//                Integer first = Integer.parseInt(reader.readLine()) - 1;
-//                String second = reader.readLine();
-//                String third = reader.readLine();
-//                String fourth = reader.readLine();
-//                for (String word : second.split(" ")) {
-//                    if (!index.containsKey(word)) {
-//                        index.put(word, new HashMap<>());
-//                    }
-//                    Map<Integer, Integer> mp = index.get(word);
-//                    mp.put(first, mp.getOrDefault(first, 0) + 1);
-//                }
-//                for (String word : third.split(" ")) {
-//                    if (!index.containsKey(word)) {
-//                        index.put(word, new HashMap<>());
-//                    }
-//                    Map<Integer, Integer> mp = index.get(word);
-//                    mp.put(first, mp.getOrDefault(first - 1, 0) + 2);
-//                }
-//                for (String word : fourth.split(" ")) {
-//                    if (!index.containsKey(word)) {
-//                        index.put(word, new HashMap<>());
-//                    }
-//                    Map<Integer, Integer> mp = index.get(word);;
-//                    mp.put(first - 1, mp.getOrDefault(first - 1, 0) + 2);
-//                }
-//            }
-//
-//            try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("kakoi.dat"))) {
-//                oos.writeObject(index);
-//            } catch(Exception e){
-//                System.out.println(e.getMessage());
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        File file = new File("pozhaluista_ne_padai.txt");
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            HashMap<String, HashMap<Integer, Integer>> index = new HashMap<>();
+            for (int i = 1; i <= 289; ++i) {
+                Integer first = Integer.parseInt(reader.readLine());
+                String second = reader.readLine();
+                String third = reader.readLine();
+                String fourth = reader.readLine();
+                for (String word : second.split(" ")) {
+                    if (!index.containsKey(word)) {
+                        index.put(word, new HashMap<>());
+                    }
+                    Map<Integer, Integer> mp = index.get(word);
+                    mp.put(first, mp.getOrDefault(first, 0) + 1);
+                }
+                for (String word : third.split(" ")) {
+                    if (!index.containsKey(word)) {
+                        index.put(word, new HashMap<>());
+                    }
+                    Map<Integer, Integer> mp = index.get(word);
+                    mp.put(first, mp.getOrDefault(first, 0) + 2);
+                }
+                for (String word : fourth.split(" ")) {
+                    if (!index.containsKey(word)) {
+                        index.put(word, new HashMap<>());
+                    }
+                    Map<Integer, Integer> mp = index.get(word);
+                    mp.put(first, mp.getOrDefault(first, 0) + 2);
+                }
+            }
+
+            HashMap<Integer, Integer> mp = index.get("бонусный");
+
+            try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("kakoi.dat"))) {
+                oos.writeObject(index);
+            } catch(Exception e){
+                System.out.println(e.getMessage());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         List<Record> records = ParserExcel.parse(DATABASE_FILE_NAME);
         InvertedIndex index = new InvertedIndex(records);
-
-        System.out.println(index.processQuestion(TextFormatter.getFixedWords("Как потратить бонусные рубли")));
+        List<String> lst = TextFormatter.getFixedWords("Как потратить бонусные рубли");
+        System.out.println(index.processQuestion(lst));
 
         int counter = 0;
     }
